@@ -1,0 +1,780 @@
+/* =================================================================
+   💖 DIGITAL GREETING CARD - MOBILE STORY FLOW STYLESHEET 💖
+   Continuous Animated Scroll Story, Infinite Swipe Deck, Instagram Nav
+   ================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #ff4b72;
+  --primary-hover: #ff2a56;
+  --secondary: #ff85a2;
+  --accent: #ffd1dc;
+  --gold: #ffe066;
+  --bg-gradient: linear-gradient(135deg, #0d0914 0%, #200b21 40%, #2d1024 70%, #0d0914 100%);
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.45);
+  --text-main: #ffffff;
+  --text-sub: #f0c0d0;
+  --font-main: 'Outfit', sans-serif;
+  --font-hand: 'Dancing Script', cursive;
+  --font-note: 'Caveat', cursive;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: -webkit-fill-available;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Background Canvas for Floating Hearts */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Main Mobile Outer Container */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  padding: 15px 12px 85px 12px; /* Bottom padding for Insta nav */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* =================================================================
+   1. ENVELOPE / ENTRANCE SCREEN
+   ================================================================= */
+.envelope-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(13, 9, 20, 0.96);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  padding: 20px 15px;
+}
+
+.envelope-screen.opened {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.envelope-wrapper {
+  perspective: 1000px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.envelope {
+  width: 260px;
+  height: 170px;
+  background: linear-gradient(145deg, #ff6b8b, #ff406c);
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(255, 75, 114, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+  transform-style: preserve-3d;
+}
+
+.envelope-wrapper:active .envelope {
+  transform: scale(0.96);
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 130px solid transparent;
+  border-right: 130px solid transparent;
+  border-top: 95px solid #ff4b72;
+  transform-origin: top;
+  transition: transform 0.5s ease;
+  z-index: 3;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+}
+
+.envelope-wrapper.open .envelope-flap {
+  transform: rotateX(180deg);
+}
+
+.heart-seal {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  animation: pulse-heart 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-heart {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.15); }
+}
+
+.envelope-sticker {
+  width: 75px;
+  height: 75px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.envelope-title {
+  font-family: var(--font-hand);
+  font-size: 2.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(255, 75, 114, 0.8);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.envelope-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  text-align: center;
+  max-width: 290px;
+  line-height: 1.4;
+}
+
+.click-hint {
+  margin-top: 18px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 30px;
+  font-size: 0.85rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  60% { transform: translateY(-3px); }
+}
+
+/* =================================================================
+   2. FLOATING AUDIO PLAYER WIDGET
+   ================================================================= */
+.audio-player-widget {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  padding: 5px 12px 5px 8px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 90;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.music-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 75, 114, 0.5);
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-bars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 10px;
+  margin-top: 1px;
+}
+
+.bar {
+  width: 2px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.playing .bar:nth-child(1) { animation: sound-bar 0.8s infinite ease-in-out alternate; }
+.playing .bar:nth-child(2) { animation: sound-bar 0.6s infinite ease-in-out alternate 0.2s; }
+.playing .bar:nth-child(3) { animation: sound-bar 1.0s infinite ease-in-out alternate 0.4s; }
+
+@keyframes sound-bar {
+  0% { height: 2px; }
+  100% { height: 10px; }
+}
+
+/* =================================================================
+   3. BOLD LUXURY HERO HEADER
+   ================================================================= */
+.card-header {
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 22px;
+  width: 100%;
+}
+
+.main-title {
+  font-family: var(--font-hand);
+  font-size: 3.1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  background: linear-gradient(135deg, #ffffff 0%, #ffb3c6 40%, #ff4b72 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 15px rgba(255, 75, 114, 0.5)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+/* =================================================================
+   4. INSTAGRAM STYLE BOTTOM NAVIGATION BAR
+   ================================================================= */
+.insta-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(12, 8, 18, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 95;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
+  padding: 0 10px;
+}
+
+.insta-nav-item {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 6px 12px;
+  flex: 1;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease, stroke 0.2s ease, fill 0.2s ease;
+}
+
+.nav-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease;
+}
+
+/* Active Instagram State */
+.insta-nav-item.active {
+  color: var(--primary);
+}
+
+.insta-nav-item.active .nav-icon {
+  stroke: var(--primary);
+  transform: scale(1.1);
+}
+
+.insta-nav-item.active .nav-label {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Glowing Indicator Line on Top of Active Tab */
+.insta-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 8px var(--primary);
+}
+
+/* =================================================================
+   5. CONTINUOUS SCROLLING STORY SECTIONS
+   ================================================================= */
+.story-flow {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.story-section {
+  width: 100%;
+  scroll-margin-top: 20px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.story-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 22px 16px;
+  box-shadow: var(--glass-shadow);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-heading {
+  font-family: var(--font-note);
+  font-size: 1.85rem;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* =================================================================
+   6. OPTIMAL SMOOTH DATING APP SWIPE DECK
+   ================================================================= */
+.swipe-deck-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.swipe-card-stack {
+  position: relative;
+  width: 100%;
+  max-width: 310px;
+  height: 350px;
+  margin: 0 auto;
+  perspective: 1000px;
+  touch-action: none;
+}
+
+/* 100% OPAQUE CARD BACKDROP */
+.swipe-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(165deg, #2b112c 0%, #1a0a1d 100%);
+  border: 1.5px solid rgba(255, 133, 162, 0.4);
+  border-radius: 24px;
+  padding: 20px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.65);
+  transform-origin: 50% 100%;
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.25s ease;
+  user-select: none;
+  cursor: grab;
+  will-change: transform, opacity;
+}
+
+.swipe-card:active {
+  cursor: grabbing;
+}
+
+/* HIDE CONTENT OF NON-ACTIVE CARDS */
+.swipe-card .swipe-card-sticker,
+.swipe-card .swipe-card-heading,
+.swipe-card .swipe-card-text,
+.swipe-card .swipe-card-hint {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* SHOW CONTENT OF TOP ACTIVE CARD ONLY */
+.swipe-card.active-top-card .swipe-card-sticker,
+.swipe-card.active-top-card .swipe-card-heading,
+.swipe-card.active-top-card .swipe-card-text,
+.swipe-card.active-top-card .swipe-card-hint {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.swipe-card-sticker {
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+  margin: 6px 0;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+}
+
+.swipe-card-heading {
+  font-family: var(--font-note);
+  font-size: 1.65rem;
+  color: #ffffff;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.swipe-card-text {
+  font-size: 0.93rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.swipe-card-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Swipe Controls Below Card Stack */
+.swipe-actions {
+  display: flex;
+  gap: 35px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+  margin-bottom: 8px;
+}
+
+.action-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.88);
+}
+
+.action-btn.pass {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ff6b6b;
+}
+
+.action-btn.like {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(255, 75, 114, 0.6);
+}
+
+/* 250ms FLY OUT ANIMATIONS */
+.swipe-card.fly-left {
+  transform: translate(-140vw, -40px) rotate(-25deg) !important;
+  opacity: 0 !important;
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out !important;
+}
+
+.swipe-card.fly-right {
+  transform: translate(140vw, -40px) rotate(25deg) !important;
+  opacity: 0 !important;
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out !important;
+}
+
+/* =================================================================
+   7. POLAROID GALLERY
+   ================================================================= */
+.polaroid-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+.polaroid-card {
+  background: #ffffff;
+  padding: 12px 12px 18px 12px;
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transform: rotate(var(--rotation, 0deg));
+  position: relative;
+}
+
+.polaroid-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.polaroid-img-wrapper {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #f0f0f0;
+}
+
+.polaroid-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.polaroid-caption {
+  font-family: var(--font-note);
+  font-size: 1.25rem;
+  color: #222222;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.polaroid-date {
+  font-size: 0.72rem;
+  color: #777777;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* =================================================================
+   8. REASONS WHY I LOVE YOU GRID
+   ================================================================= */
+.reasons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.reason-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 15px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.reason-icon {
+  font-size: 1.8rem;
+  background: rgba(255, 75, 114, 0.18);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reason-content h4 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.reason-content p {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  line-height: 1.4;
+  font-weight: 300;
+}
+
+/* =================================================================
+   9. INTERACTIVE SCRATCH SURPRISE COUPON
+   ================================================================= */
+.coupon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.scratch-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  margin: 15px 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.scratch-secret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff4b72, #833ab4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  text-align: center;
+  color: white;
+}
+
+.secret-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+#scratch-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 5;
+  touch-action: none;
+}
+
+.scratch-hint {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  margin-top: 8px;
+}
+
+/* =================================================================
+   10. FOOTER
+   ================================================================= */
+.card-footer {
+  margin-top: 35px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+/* =================================================================
+   TABLET & DESKTOP ENHANCEMENTS
+   ================================================================= */
+@media (min-width: 600px) {
+  .app-container {
+    max-width: 650px;
+    padding: 25px 20px 100px 20px;
+  }
+  .polaroid-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .main-title {
+    font-size: 4.1rem;
+  }
+  .swipe-card-stack {
+    max-width: 330px;
+    height: 370px;
+  }
+}
